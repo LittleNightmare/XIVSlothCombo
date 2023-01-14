@@ -188,6 +188,8 @@ namespace XIVSlothCombo.CustomComboNS.Functions
         /// <returns> True or false. </returns>
         public static bool CanSpellWeave(uint actionID, double weaveTime = 0.6)
         {
+            if (Service.Configuration.OnlyDoubleWeave && ActionWatching.HasDoubleWeaveBefore())
+                return false;
             float castTimeRemaining = LocalPlayer.TotalCastTime - LocalPlayer.CurrentCastTime;
 
             if (GetCooldown(actionID).CooldownRemaining > weaveTime &&                          // Prevent GCD delay

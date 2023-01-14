@@ -50,6 +50,25 @@ namespace XIVSlothCombo.Window.Tabs
 
             #endregion
 
+            #region ForceDoubleWeave
+
+            bool onlyDoubleWeave = Service.Configuration.OnlyDoubleWeave;
+
+            if (ImGui.Checkbox("只双插", ref onlyDoubleWeave))
+            {
+                Service.Configuration.OnlyDoubleWeave = onlyDoubleWeave;
+                Service.Configuration.Save();
+            }
+
+            if (ImGui.IsItemHovered())
+            {
+                ImGui.BeginTooltip();
+                ImGui.TextUnformatted("启用后，插件不会在双插后，继续在循环中插入能力技。");
+                ImGui.EndTooltip();
+            }
+            ImGui.NextColumn();
+            #endregion
+
             #region Combat Log
 
             bool showCombatLog = Service.Configuration.EnabledOutputLog;
@@ -130,11 +149,11 @@ namespace XIVSlothCombo.Window.Tabs
             ImGui.NextColumn();
 
             #endregion
-            
-            
+
+
             #region 输出到聊天框
 
-            
+
             var setOutChat = Service.Configuration.SetOutChat;
 
             //if (ImGui.Checkbox("Hide Message of the Day", ref motd))

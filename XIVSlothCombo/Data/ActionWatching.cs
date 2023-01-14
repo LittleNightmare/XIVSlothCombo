@@ -28,6 +28,7 @@ namespace XIVSlothCombo.Data
         private static readonly Dictionary<string, List<uint>> statusCache = new();
 
         public static List<uint> CombatActions = new List<uint>();
+        public static List<uint> UsedActions = new List<uint>();
 
         private delegate void ReceiveActionEffectDelegate(int sourceObjectId, IntPtr sourceActor, IntPtr position, IntPtr effectHeader, IntPtr effectArray, IntPtr effectTrail);
         private readonly static Hook<ReceiveActionEffectDelegate>? ReceiveActionEffectHook;
@@ -82,9 +83,10 @@ namespace XIVSlothCombo.Data
             try
             {
                 SendActionHook!.Original(targetObjectId, actionType, actionId, sequence, a5, a6, a7, a8, a9);
+                if (!CustomComboNS.Functions.CustomComboFunctions.InCombat()) UsedActions.Clear();
                 TimeLastActionUsed = DateTime.Now;
                 ActionType = actionType;
-
+                UsedActions.Add(actionId);
                 //Dalamud.Logging.PluginLog.Debug($"{actionId} {sequence} {a5} {a6} {a7} {a8} {a9}");
             }
             catch (Exception ex)
@@ -92,6 +94,14 @@ namespace XIVSlothCombo.Data
                 Dalamud.Logging.PluginLog.Error(ex, "SendActionDetour");
                 SendActionHook!.Original(targetObjectId, actionType, actionId, sequence, a5, a6, a7, a8, a9);
             }
+        }
+        public static bool HasDoubleWeaveBefore()
+        {
+            if (UsedActions.Count < 2) return false;;
+            if (GetAttackType(UsedActions[^1]) != ActionAttackType.Ability) return false;
+            if (GetAttackType(UsedActions[^2]) != ActionAttackType.Ability) return false;
+
+            return true;
         }
 
         public static uint WhichOfTheseActionsWasLast(params uint[] actions)
@@ -194,11 +204,11 @@ namespace XIVSlothCombo.Data
         {
             if (!ActionSheet.TryGetValue(id, out var action)) return ActionAttackType.Unknown;
 
-            return action.ActionCategory.Value.Name.RawString switch
+            return action.ActionCategory.Value.RowId switch
             {
-                "Spell" => ActionAttackType.Spell,
-                "Weaponskill" => ActionAttackType.Weaponskill,
-                "Ability" => ActionAttackType.Ability,
+                2 => ActionAttackType.Spell,
+                3 => ActionAttackType.Weaponskill,
+                4 => ActionAttackType.Ability,
                 _ => ActionAttackType.Unknown
             };
         }
