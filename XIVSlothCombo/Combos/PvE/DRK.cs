@@ -18,6 +18,7 @@ namespace XIVSlothCombo.Combos.PvE
             SaltedEarth = 3639,
             AbyssalDrain = 3641,
             CarveAndSpit = 3643,
+            //ÑªÂÒ
             Delirium = 7390,
             Quietus = 7391,
             //Ñª½¦
@@ -122,7 +123,12 @@ namespace XIVSlothCombo.Combos.PvE
                                 {
                                     if (IsEnabled(CustomComboPreset.DRK_BloodWeapon) && IsOffCooldown(BloodWeapon) && LevelChecked(BloodWeapon))
                                         return BloodWeapon;
-                                    if (IsEnabled(CustomComboPreset.DRK_Delirium) && IsOffCooldown(Delirium) && LevelChecked(Delirium))
+                                    
+                                   
+                              
+
+                                    
+                                    if (IsEnabled(CustomComboPreset.DRK_Delirium) && IsOffCooldown(Delirium) && LevelChecked(Delirium)&& (gauge.Blood < 70 || GetBuffStacks(Buffs.BloodWeapon) < 0))
                                         return Delirium;
                                 }
 
@@ -179,7 +185,7 @@ namespace XIVSlothCombo.Combos.PvE
                             
                             
                             //·ÀÖ¹Ñª½¦Ã»ÓÐ´òÍê
-                            if (GetBuffStacks(Buffs.Delirium) > 0 && GetBuffRemainingTime(Buffs.Delirium) is > 0 and < 8f)
+                            if (GetBuffStacks(Buffs.Delirium) > 0 && GetBuffRemainingTime(Buffs.Delirium) is > 0 and < 7.5f)
                                 return Ñª½¦;
                             
                             //Regular Delirium  
